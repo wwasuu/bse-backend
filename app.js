@@ -1,24 +1,55 @@
 const express = require("express");
-const http = require("http");
+const cors = require("cors");
+const expressStatusMonitor = require("express-status-monitor");
+const compression = require("compression");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
 const socket = require("socket.io");
 const app = express();
-const port = 80;
+const port = 8080;
 
-const server = http.createServer(app);
-const io = socket.listen(server);
+app.use(cors());
+
+app.use(expressStatusMonitor());
+
+app.use(
+  compression({
+    threshold: 512,
+  })
+);
+
+app.use(cors());
+
+app.use(bodyParser.json({ limit: "5mb" }));
+app.use(bodyParser.json({ type: "application/vnd.api+json" }));
+app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
+
+app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-io.on("connection", (socket) => {
-  console.log("a user connected");
+const server = app.listen(port, () => {
+  console.log(`App listening at http://localhost:${port}`);
 });
 
-io.emit("event", {
-  node: "A13",
-}); // This will emit the event to all connected sockets
+const io = socket.listen(server);
 
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+io.on("connection", (socket) => {
+  console.log(`Connected: ${socket.id}`);
+  socket.on("sync", (data) => {
+    console.log("sync", data);
+  });
+
+  setInterval(() => {
+    io.emit("sync", {
+      token: "mQPh6Zq6rC",
+      type: "MEASURE", 
+      data: [{
+        input: "GPIO4",
+        value: 10
+      }]
+    }); // This will emit the event to all connected sockets
+  }, 5000);
 });
