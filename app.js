@@ -33,7 +33,7 @@ const server = app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
 
-const webSocketServer = new WebSocket.Server({ server });
+const webSocketServer = new WebSocket.Server({ server, path: "/ws" });
 webSocketServer.on("connection", (webSocket) => {
   console.info("Total connected clients:", webSocketServer.clients.size);
    setInterval(() => {
