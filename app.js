@@ -51,22 +51,23 @@ webSocketServer.on("connection", (webSocket) => {
   }, 5000);
 });
 
-// const io = socket.listen(server);
+const io = socket.listen(server);
 
-// io.on("connection", (socket) => {
-//   console.log(`Connected: ${socket.id}`);
-//   socket.on("sync", (data) => {
-//     console.log("sync", data);
-//   });
+io.on("connection", (socket) => {
+  console.log(`Connected: ${socket.id}`);
+  socket.on("sync", (data) => {
+    console.log("sync", data);
+  });
 
-//   setInterval(() => {
-//     io.emit("sync", {
-//       token: "mQPh6Zq6rC",
-//       type: "MEASURE",
-//       data: [{
-//         input: "GPIO4",
-//         value: 10
-//       }]
-//     }); // This will emit the event to all connected sockets
-//   }, 5000);
-// });
+  setInterval(() => {
+    io.send("Hello BSE Electronic")
+    io.emit("sync", {
+      token: "mQPh6Zq6rC",
+      type: "MEASURE",
+      data: [{
+        input: "GPIO4",
+        value: 10
+      }]
+    }); // This will emit the event to all connected sockets
+  }, 5000);
+});
