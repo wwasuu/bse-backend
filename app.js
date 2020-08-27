@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const expressStatusMonitor = require("express-status-monitor");
+const WebSocket = require("ws");
 const compression = require("compression");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
@@ -32,22 +33,39 @@ const server = app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
 
-const io = socket.listen(server);
-
-io.on("connection", (socket) => {
-  console.log(`Connected: ${socket.id}`);
-  socket.on("sync", (data) => {
-    console.log("sync", data);
-  });
-
-  setInterval(() => {
-    io.emit("sync", {
+const webSocketServer = new WebSocket.Server({ server });
+webSocketServer.on("connection", (webSocket) => {
+  console.info("Total connected clients:", webSocketServer.clients.size);
+   setInterval(() => {
+    webSocketServer.emit("sync", {
       token: "mQPh6Zq6rC",
-      type: "MEASURE", 
-      data: [{
-        input: "GPIO4",
-        value: 10
-      }]
-    }); // This will emit the event to all connected sockets
-  }, 5000);
+      type: "MEASURE",
+      data: [
+        {
+          input: "GPIO4",
+          value: 10,
+        },
+      ],
+    });
+   }, 5000)
 });
+
+// const io = socket.listen(server);
+
+// io.on("connection", (socket) => {
+//   console.log(`Connected: ${socket.id}`);
+//   socket.on("sync", (data) => {
+//     console.log("sync", data);
+//   });
+
+//   setInterval(() => {
+//     io.emit("sync", {
+//       token: "mQPh6Zq6rC",
+//       type: "MEASURE",
+//       data: [{
+//         input: "GPIO4",
+//         value: 10
+//       }]
+//     }); // This will emit the event to all connected sockets
+//   }, 5000);
+// });
