@@ -37,7 +37,6 @@ const webSocketServer = new WebSocket.Server({ server, path: "/ws" });
 webSocketServer.on("connection", (webSocket) => {
   console.info("Total connected clients:", webSocketServer.clients.size);
    setInterval(() => {
-    webSocketServer.send('Hello Client');
     webSocketServer.emit("sync", {
       token: "mQPh6Zq6rC",
       type: "MEASURE",
