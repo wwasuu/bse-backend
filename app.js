@@ -18,13 +18,11 @@ app.use(
   })
 );
 
-app.use(cors());
-
 app.use(bodyParser.json({ limit: "5mb" }));
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
 
-app.use(morgan("dev"));
+app.use(morgan("combined"));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
