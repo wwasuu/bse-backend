@@ -34,11 +34,12 @@ const server = app.listen(port, () => {
 });
 
 const webSocketServer = new WebSocket.Server({ server, path: "/ws" });
-webSocketServer.on("message", function incoming(data) {
-  console.log(data);
-});
 webSocketServer.on("connection", (webSocket) => {
   console.info("Total connected clients:", webSocketServer.clients.size);
+  webSocket.on('message', function incoming(message) {
+    console.log('received: %s', message);
+  });
+
   setInterval(() => {
     webSocket.send("Hello BSE Electronic");
     // webSocketServer.emit("sync", {
