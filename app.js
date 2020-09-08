@@ -34,6 +34,9 @@ const server = app.listen(port, () => {
 });
 
 const webSocketServer = new WebSocket.Server({ server, path: "/ws" });
+webSocketServer.on("message", function incoming(data) {
+  console.log(data);
+});
 webSocketServer.on("connection", (webSocket) => {
   console.info("Total connected clients:", webSocketServer.clients.size);
   setInterval(() => {
@@ -60,14 +63,16 @@ io.on("connection", (socket) => {
   });
 
   setInterval(() => {
-    io.send("Hello BSE Electronic")
+    io.send("Hello BSE Electronic");
     io.emit("sync", {
       token: "mQPh6Zq6rC",
       type: "MEASURE",
-      data: [{
-        input: "GPIO4",
-        value: 10
-      }]
+      data: [
+        {
+          input: "GPIO4",
+          value: 10,
+        },
+      ],
     }); // This will emit the event to all connected sockets
   }, 5000);
 });
