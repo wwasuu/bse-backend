@@ -1,7 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const expressStatusMonitor = require("express-status-monitor");
-const WebSocket = require("ws");
 const compression = require("compression");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
@@ -10,8 +8,6 @@ const app = express();
 const port = 8080;
 
 app.use(cors());
-
-app.use(expressStatusMonitor());
 
 app.use(
   compression({
