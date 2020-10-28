@@ -38,22 +38,26 @@ const io = socket.listen(server);
 io.on("connection", (socket) => {
   console.log(`Connected: ${socket.id}`);
   socket.on("sync", (data) => {
-    console.log("sync", data);
+    const token = data.token
+    io.emit(token, {
+      token,
+      temp: 35.7,
+    }); // This will emit the event to all connected sockets
   });
 
-  setInterval(() => {
-    io.send("Hello BSE Electronic");
-    io.to('room1').emit('hello room 1');
-    io.to('room2').emit('hello room 2');
-    io.emit("sync", {
-      token: "mQPh6Zq6rC",
-      type: "MEASURE",
-      data: [
-        {
-          input: "GPIO4",
-          value: 10,
-        },
-      ],
-    }); // This will emit the event to all connected sockets
-  }, 5000);
+  // setInterval(() => {
+  //   io.send("Hello BSE Electronic");
+  //   io.to('room1').emit('hello room 1');
+  //   io.to('room2').emit('hello room 2');
+  //   io.emit("sync", {
+  //     token: "mQPh6Zq6rC",
+  //     type: "MEASURE",
+  //     data: [
+  //       {
+  //         input: "GPIO4",
+  //         value: 10,
+  //       },
+  //     ],
+  //   }); // This will emit the event to all connected sockets
+  // }, 5000);
 });
