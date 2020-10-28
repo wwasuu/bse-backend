@@ -38,10 +38,12 @@ const io = socket.listen(server);
 io.on("connection", (socket) => {
   console.log(`Connected: ${socket.id}`);
   socket.on("sync", (data) => {
+    console.log("data", data)
     const token = data.token
     io.emit(token, {
       token,
       temp: 35.7,
+      time: new Date()
     }); // This will emit the event to all connected sockets
   });
 
