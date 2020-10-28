@@ -33,28 +33,6 @@ const server = app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
 
-const webSocketServer = new WebSocket.Server({ server, path: "/ws" });
-webSocketServer.on("connection", (webSocket) => {
-  console.info("Total connected clients:", webSocketServer.clients.size);
-  webSocket.on('message', function incoming(message) {
-    console.log('received: %s', message);
-  });
-
-  setInterval(() => {
-    webSocket.send("Hello BSE Electronic");
-    // webSocketServer.emit("sync", {
-    //   token: "mQPh6Zq6rC",
-    //   type: "MEASURE",
-    //   data: [
-    //     {
-    //       input: "GPIO4",
-    //       value: 10,
-    //     },
-    //   ],
-    // });
-  }, 5000);
-});
-
 const io = socket.listen(server);
 
 io.on("connection", (socket) => {
