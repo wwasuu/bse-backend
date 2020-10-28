@@ -43,6 +43,8 @@ io.on("connection", (socket) => {
 
   setInterval(() => {
     io.send("Hello BSE Electronic");
+    io.to('room1').emit('hello room 1');
+    io.to('room2').emit('hello room 2');
     io.emit("sync", {
       token: "mQPh6Zq6rC",
       type: "MEASURE",
