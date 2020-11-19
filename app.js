@@ -15,9 +15,16 @@ app.use(
   })
 );
 
-app.use(bodyParser.json({ limit: "5mb" }));
-app.use(bodyParser.json({ type: "application/vnd.api+json" }));
-app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
+app.use(bodyParser.json({
+  limit: "5mb"
+}));
+app.use(bodyParser.json({
+  type: "application/vnd.api+json"
+}));
+app.use(bodyParser.urlencoded({
+  limit: "5mb",
+  extended: true
+}));
 
 app.use(morgan("combined"));
 
@@ -42,10 +49,19 @@ io.on("connection", (socket) => {
   socket.on("sync", (data) => {
     console.log("data", data)
     const token = data.token
-    io.emit(token, {
-      token,
-      temp: TEMP[getRandomInt(3)],
-      time: new Date()
-    }); // This will emit the event to all connected sockets
-  });
+    // io.emit(token, {
+    //   token,
+    //   temp: TEMP[getRandomInt(3)],
+    //   time: new Date()
+    // }); // This will emit the event to all connected sockets
+
+    setInterval(() => {
+      io.to(token).emit('message', {
+        token,
+        temp: TEMP[getRandomInt(3)],
+        time: new Date()
+      });
+    }, 5000);
+  })
+
 });
