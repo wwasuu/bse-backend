@@ -31,6 +31,12 @@ const server = app.listen(port, () => {
 
 const io = socket.listen(server);
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+const TEMP = [35.7, 36.1, 39.4]
+
 io.on("connection", (socket) => {
   console.log(`Connected: ${socket.id}`);
   socket.on("sync", (data) => {
@@ -38,24 +44,8 @@ io.on("connection", (socket) => {
     const token = data.token
     io.emit(token, {
       token,
-      temp: 35.7,
+      temp: TEMP[getRandomInt(3)],
       time: new Date()
     }); // This will emit the event to all connected sockets
   });
-
-  // setInterval(() => {
-  //   io.send("Hello BSE Electronic");
-  //   io.to('room1').emit('hello room 1');
-  //   io.to('room2').emit('hello room 2');
-  //   io.emit("sync", {
-  //     token: "mQPh6Zq6rC",
-  //     type: "MEASURE",
-  //     data: [
-  //       {
-  //         input: "GPIO4",
-  //         value: 10,
-  //       },
-  //     ],
-  //   }); // This will emit the event to all connected sockets
-  // }, 5000);
 });
