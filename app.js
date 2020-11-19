@@ -57,9 +57,13 @@ io.on("connection", (socket) => {
     //   time: new Date()
     // }); // This will emit the event to all connected sockets
 
+    socket.on('message', (message) => {
+      console.log("message", message)
+    })
+
     setInterval(() => {
       console.log("room: ", token)
-      socket.to(token).emit('message', {
+      io.to(token).emit('message', {
         token,
         temp: TEMP[getRandomInt(3)],
         time: new Date()
