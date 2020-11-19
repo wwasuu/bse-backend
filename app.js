@@ -47,8 +47,9 @@ const TEMP = [35.7, 36.1, 39.4]
 io.on("connection", (socket) => {
   console.log(`Connected: ${socket.id}`);
   socket.on("sync", (data) => {
-    console.log("data", data)
+    console.log("data", data)    
     const token = data.token
+    io.join(token)
     // io.emit(token, {
     //   token,
     //   temp: TEMP[getRandomInt(3)],
@@ -56,6 +57,7 @@ io.on("connection", (socket) => {
     // }); // This will emit the event to all connected sockets
 
     setInterval(() => {
+      console.log("room: ", token)
       io.to(token).emit('message', {
         token,
         temp: TEMP[getRandomInt(3)],
