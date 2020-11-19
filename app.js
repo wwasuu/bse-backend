@@ -45,11 +45,12 @@ function getRandomInt(max) {
 const TEMP = [35.7, 36.1, 39.4]
 
 io.on("connection", (socket) => {
-  console.log(`Connected: ${socket.id}`);
+
+  console.log( `${new Date()} Connected: ${socket.id}`);
   socket.on("sync", (data) => {
     console.log("data", data)    
     const token = data.token
-    io.join(token)
+    socket.join(token)
     // io.emit(token, {
     //   token,
     //   temp: TEMP[getRandomInt(3)],
@@ -58,7 +59,7 @@ io.on("connection", (socket) => {
 
     setInterval(() => {
       console.log("room: ", token)
-      io.to(token).emit('message', {
+      socket.to(token).emit('message', {
         token,
         temp: TEMP[getRandomInt(3)],
         time: new Date()
