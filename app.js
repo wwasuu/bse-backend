@@ -77,7 +77,6 @@ io.on("connection", (socket) => {
   socket.on("sync", (data) => {
     const token = data.token
     socket.join(token)
-    socket.join('client:' + token)
     socket.on("setting", (data) => {
       io.to(token).emit('setting', {
         token,
