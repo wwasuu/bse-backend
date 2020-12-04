@@ -32,6 +32,27 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.post("/setting", async (req, res) => {
+  try {
+    const data = req.body
+    const token = req.body.token
+    io.to('client:' + token).emit('setting', {
+      token,
+      temp: parseFloat(data.tempurature),
+      light: parseInt(data.light || 0),
+      time: new Date()
+    });
+    res.json({
+      success: true
+    })
+  } catch (error) {
+    console.log("error while call /setting", error)
+    res.status(500).json({
+      success: false
+    })
+  }
+});
+
 const server = app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
@@ -45,30 +66,17 @@ function getRandomInt(max) {
 const TEMP = [35.7, 36.1, 39.4]
 
 io.on("connection", (socket) => {
-
-  console.log( `${new Date()} Connected: ${socket.id}`);
+  console.log(`${new Date()} Connected: ${socket.id}`);
   socket.on("sync", (data) => {
-    console.log("data", data)    
     const token = data.token
-    socket.join(token)
-    // io.emit(token, {
-    //   token,
-    //   temp: TEMP[getRandomInt(3)],
-    //   time: new Date()
-    // }); // This will emit the event to all connected sockets
-
-    socket.on('message', (message) => {
-      console.log("message", message)
-    })
-
+    socket.join('client:' + token)
     setInterval(() => {
       console.log("room: ", token)
-      io.to(token).emit('message', {
+      io.to('client:' + token).emit('message', {
         token,
         temp: TEMP[getRandomInt(3)],
         time: new Date()
       });
     }, 5000);
   })
-
 });
