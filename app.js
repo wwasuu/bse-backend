@@ -78,9 +78,17 @@ io.on("connection", (socket) => {
     const token = data.token
     socket.join(token)
     socket.join('client:' + token)
+    socket.on("setting", (data) => {
+      io.to(token).emit('setting', {
+        token,
+        temp: data.tempurature,
+        light: data.light,
+        time: new Date()
+      });
+    })
     socket.on("message", (data) => {
       console.log('message', data)
-      io.to('client:' + token).emit('message', {
+      io.to(token).emit('message', {
         token,
         temp: data.message,
         time: new Date()
