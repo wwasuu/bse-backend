@@ -70,17 +70,21 @@ io.on("connection", (socket) => {
   socket.on("sync", (data) => {
     const token = data.token
     socket.join('token')
-    // socket.join('client:' + token)
+    socket.join('client:' + token)
     socket.on("message", (data) => {
-      console.log(data)
+      io.to('client:' + token).emit('message', {
+        token,
+        temp: data.message,
+        time: new Date()
+      });
     })
-    // setInterval(() => {
-    //   console.log("room: ", token)
-    //   io.to('client:' + token).emit('message', {
-    //     token,
-    //     temp: TEMP[getRandomInt(3)],
-    //     time: new Date()
-    //   });
-    // }, 5000);
+    setInterval(() => {
+      console.log("room: ", token)
+      io.to('client:' + token).emit('message', {
+        token,
+        // temp: TEMP[getRandomInt(3)],
+        time: new Date()
+      });
+    }, 5000);
   })
 });
