@@ -32,6 +32,13 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.get("/transfer", (req, res) => {
+  io.emit("transfer", {  time: new Date() })
+  res.json({
+    success: true
+  })
+});
+
 app.post("/setting", async (req, res) => {
   try {
     const data = req.body
@@ -79,13 +86,8 @@ io.on("connection", (socket) => {
         time: new Date()
       });
     })
-    // setInterval(() => {
-    //   console.log("room: ", token)
-    //   io.to('client:' + token).emit('message', {
-    //     token,
-    //     // temp: TEMP[getRandomInt(3)],
-    //     time: new Date()
-    //   });
-    // }, 5000);
   })
+  // setInterval(() => {
+  //   io.emit("transfer", {  time: new Date() })
+  // }, 3000)
 });
