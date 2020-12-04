@@ -78,21 +78,19 @@ io.on("connection", (socket) => {
     const token = data.token
     socket.join(token)
     socket.on("setting", (data) => {
-      socket.to(token).emit('setting', {
-        token,
+      socket.to(token).emit('message', {
         temp: data.tempurature,
         light: data.light,
-        time: new Date()
       });
     })
-    socket.on("message", (data) => {
-      console.log('message', data)
-      io.to(token).emit('message', {
-        token,
-        temp: data.message,
-        time: new Date()
-      });
-    })
+    // socket.on("message", (data) => {
+    //   console.log('message', data)
+    //   io.to(token).emit('message', {
+    //     token,
+    //     temp: data.message,
+    //     time: new Date()
+    //   });
+    // })
   })
   // setInterval(() => {
   //   io.emit("transfer", {  time: new Date() })
