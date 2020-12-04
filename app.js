@@ -36,7 +36,7 @@ app.post("/setting", async (req, res) => {
   try {
     const data = req.body
     const token = req.body.token
-    io.to('client:' + token).emit('setting', {
+    io.to(token).emit('setting', {
       token,
       temp: parseFloat(data.tempurature),
       light: parseInt(data.light || 0),
