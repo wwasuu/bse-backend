@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
     const token = data.token
     socket.join(token)
     socket.on("setting", (data) => {
-      io.to(token).emit('setting', {
+      socket.to(token).emit('setting', {
         token,
         temp: data.tempurature,
         light: data.light,
