@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
   console.log(`${new Date()} Connected: ${socket.id}`);
   socket.on("sync", (data) => {
     const token = data.token
-    socket.join('token')
+    socket.join(token)
     socket.join('client:' + token)
     socket.on("message", (data) => {
       console.log('message', data)
