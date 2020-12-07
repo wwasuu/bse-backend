@@ -77,20 +77,20 @@ io.on("connection", (socket) => {
   socket.on("sync", (data) => {
     const token = data.token
     socket.join(token)
-    socket.on("setting", (data) => {
-      socket.to(token).emit('message', {
-        temp: data.tempurature,
-        light: data.light,
-      });
-    })
-    // socket.on("message", (data) => {
-    //   console.log('message', data)
-    //   io.to(token).emit('message', {
-    //     token,
-    //     temp: data.message,
-    //     time: new Date()
+    // socket.on("setting", (data) => {
+    //   socket.to(token).emit('message', {
+    //     temp: data.tempurature,
+    //     light: data.light,
     //   });
     // })
+    socket.on("message", (data) => {
+      console.log('message', data)
+      // io.to(token).emit('message', {
+      //   token,
+      //   temp: data.message,
+      //   time: new Date()
+      // });
+    })
   })
   // setInterval(() => {
   //   io.emit("transfer", {  time: new Date() })
