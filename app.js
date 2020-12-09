@@ -43,7 +43,7 @@ app.post("/setting", async (req, res) => {
   try {
     const data = req.body
     const token = req.body.token
-    io.to('client:' + token).emit('setting', {
+    io.to(token).emit('setting', {
       token,
       temp: parseFloat(data.tempurature),
       light: parseInt(data.light || 0),
@@ -85,14 +85,10 @@ io.on("connection", (socket) => {
     // })
     socket.on("message", (data) => {
       console.log('message', data)
-      // io.to(token).emit('message', {
-      //   token,
-      //   temp: data.message,
-      //   time: new Date()
-      // });
+      io.to(token).emit('display', {
+        ...data,
+        timestamp: new Date()
+      });
     })
   })
-  // setInterval(() => {
-  //   io.emit("transfer", {  time: new Date() })
-  // }, 3000)
 });
