@@ -44,8 +44,7 @@ app.post("/setting", async (req, res) => {
     const data = req.body
     const token = req.body.token
     io.to(token).emit('message', {
-      token,
-      ...data.configuration,
+      ...data,
       time: new Date()
     });
     res.json({
