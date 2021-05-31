@@ -6,6 +6,9 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const socket = require("socket.io");
 const app = express();
+const sequelize = require('./app/lib/sequelize');
+const route = require("./app/route");
+require('dotenv').config();
 
 app.use(cors());
 
@@ -28,7 +31,9 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use(morgan("combined"));
+app.use(morgan("dev"));
+
+app.use('/api', route);
 
 // app.get("/transfer", (req, res) => {
 //   io.emit("transfer", {  time: new Date() })
@@ -55,6 +60,25 @@ app.use(morgan("combined"));
 //     })
 //   }
 // });
+
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Connection has been established successfully.");
+  })
+  .catch((err) => {
+    console.error("Unable to connect to the database:", err);
+  });
+
+sequelize
+  .sync()
+  .then(() => {
+    console.log("Database has been sync");
+  })
+  .catch(error => console.log("Unable to sync to the database:", error));
+  
+
 
 let server;
 const port = process.env.PORT || 8080;
