@@ -5,9 +5,13 @@ const compression = require("compression");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const socket = require("socket.io");
+const chalk = require('chalk');
 const app = express();
 const sequelize = require('./app/lib/sequelize');
 const route = require("./app/route");
+const {
+  UserDeviceLog
+} = require("./app/model");
 require('dotenv').config();
 
 app.use(cors());
@@ -35,33 +39,6 @@ app.use(morgan("dev"));
 
 app.use('/api', route);
 
-// app.get("/transfer", (req, res) => {
-//   io.emit("transfer", {  time: new Date() })
-//   res.json({
-//     success: true
-//   })
-// });
-
-// app.post("/setting", async (req, res) => {
-//   try {
-//     const data = req.body
-//     const token = req.body.token
-//     io.to(token).emit('message', {
-//       ...data,
-//       time: new Date()
-//     });
-//     res.json({
-//       success: true
-//     })
-//   } catch (error) {
-//     console.log("error while call /setting", error)
-//     res.status(500).json({
-//       success: false
-//     })
-//   }
-// });
-
-
 sequelize
   .authenticate()
   .then(() => {
@@ -77,7 +54,6 @@ sequelize
     console.log("Database has been sync");
   })
   .catch(error => console.log("Unable to sync to the database:", error));
-  
 
 
 let server;
@@ -91,16 +67,34 @@ const io = socket.listen(server);
 
 io.on("connection", (socket) => {
   console.log(`${new Date()} Connected: ${socket.id}`);
-  socket.on("sync", (data) => {
-    const token = data.token
-    socket.join(token)
-    socket.on("message", (data) => {
-      console.log('message', data)
-      io.to(token).emit('display', {
-        ...data,
-        timestamp: new Date()
-      });
-    })
+  socket.send("Hello!");
+  socket.on('chat message', msg => {
+    io.emit('chat message', msg);
+  });
+  socket.on("sync", async (data) => {
+    try {
+      await UserDeviceLog.create({
+        user_id: null,
+        device_id: null,
+        data: JSON.stringify(data),
+        token: data.token
+      })
+    } catch (error) {
+      console.log(chalk.white.bgRed.bold("error", error));
+    }
+
+  })
+  socket.on("message", async (data) => {
+    try {
+      await UserDeviceLog.create({
+        user_id: null,
+        device_id: null,
+        data: JSON.stringify(data),
+        token: data.token
+      })
+    } catch (error) {
+      console.log(chalk.white.bgRed.bold("error", error));
+    }
   })
 });
 
